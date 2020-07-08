@@ -9,9 +9,12 @@ class Socket_Server:
             print("[+] starting server . . .")
             Src_adr = src_adr
             Src_prt = src_prt
-            s = socket(AF_INET, SOCK_STREAM)
-            s.bind((Src_adr, int(Src_prt)))
-            s.listen(5)
+            if not Src_prt:
+                Src_prt = 5550;
+                s = socket(AF_INET, SOCK_STREAM)
+                s.bind((Src_adr, int(Src_prt)))
+                s.listen(0x05)
+         
         except OSError:
             print("Unable to start the server check the IP Address or the port ID")
             sys.exit()
@@ -20,7 +23,7 @@ class Socket_Server:
         while True:
             connection, ip_Address = s.accept()
             data_buffer = connection.recv(64)
-            if len(data_buffer) > 0:
+            if len(data_buffer) > 0x00:
                 print("[+] connection successfully " + str(data_buffer) + "\n[+]Client IP Address :" + str(connection.getpeername()) +
                       "\n" + str(connection.getsockname() +
                                  "\n[+]Your server service running on :" + str(connection.getsockopt())))
@@ -28,12 +31,13 @@ class Socket_Server:
     def Client(self, src_adr, src_prt, data):
         Src_adr = src_adr
         Src_prt = src_prt
-        Data = data
-        s = socket(AF_INET, SOCK_STREAM)
-        s.connect((Src_adr, int(Src_prt)))
-        s.send(Data.encode())
-        print("Connection successfully requested")
-
+        if not Src_prt:
+            Src_port = 5000
+            Data = data
+            s = socket(AF_INET, SOCK_STREAM)
+            s.connect((Src_adr, int(Src_prt)))
+            s.send(Data.encode())
+            print("Connection successfully requested")
 
 def main(self):
     print("#####################################")
@@ -44,7 +48,7 @@ def main(self):
 
     if option == "s" or option == "S":
         server_ip = input("please enter IP address for server \n :")
-        port_id = input("please enter the port ID \n :")
+        port_id = input("please enter the port ID [default] 5550  \n :")
         tcp_server = Socket_Server
         tcp_server.Server(self, server_ip, port_id)
     if option == "c" or option == "C":
